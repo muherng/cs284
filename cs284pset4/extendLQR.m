@@ -1,5 +1,4 @@
-function [new_vert,K_debug] = extendLQR(closest_vert,xy,K)
-new_vert = [0;0];
+function [new_vert,action,time,cost] = extendLQR(closest_vert,xy,K)
 [t,y] = ode45('pendulumLQR',[0 0.1], closest_vert,'mysterious', K, xy);
 dimensions = size(y);
 end_point = y(dimensions(1),:).';

@@ -1,26 +1,20 @@
-function rrt_tree = rewireLQR(rrt_tree,N,Q,R,T,explore)
+function rrt_tree = rewireLQR(rrt_tree,N,Q,R,T)
 %nv = new_vert.';
 nv = rrt_tree(N).vertex;
 cost_to_vert = rrt_tree(N).cost;
-gamma = 10.0;
+gamma = 2.0;
 neighbor_radius = gamma*(log(N)/N)^0.5;
-neighbor_radius = gamma;
 [neighbors,policy_matrix,cost_matrix] = neighborsLQR(rrt_tree,N,neighbor_radius,Q,R);
-%disp(neighbors);
+disp(neighbors);
 for i = 1:size(neighbors,2)
     vert = rrt_tree(neighbors(i)).vertex;
     %x_bar = vert - nv.';
     %cost_to_go = x_bar.'*cost_matrix(:,:,i)*x_bar;
     %[approx_vert,cost_to_go,iter_time] = steerLQR(nv,vert,policy_matrix(:,i),cost_matrix(:,:,i),Q,R);
-    [approx_vert,action,time,cost_to_go] = steerLQR(nv,vert,policy_matrix(:,i).',cost_matrix(:,:,i),Q,R,T,explore);
-    if cost_to_go < 0.001
-        continue;
-    end
+    [approx_vert,action,time,cost_to_go] = steerLQR(nv,vert,policy_matrix(:,i).',cost_matrix(:,:,i),Q,R,T);
     new_cost = cost_to_vert + cost_to_go;
     if new_cost < rrt_tree(neighbors(i)).cost;
         disp('rewire');
-        disp(rrt_tree(neighbors(i)).cost);
-        disp(new_cost);
         old_parent = rrt_tree(neighbors(i)).parent;
         decrement = rrt_tree(neighbors(i)).cost - new_cost;
         root = neighbors(i);

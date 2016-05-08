@@ -34,8 +34,8 @@ rrt_tree(1).vertex = xy_start;
 %rrt_tree = zeros(1,1000);
 %rrt_tree(1) = 1;
 %rrt_child = cell(1,1000);
-best_cost = [];
-Q = eye(2);
+
+Q = eye(2)*1000;
 R = 1.0;
 T = 1.0;
 N = 1;
@@ -84,16 +84,8 @@ while ~nearGoal
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %% FILL ME IN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %we have set explore to 1 constantly 
     [new_vert,action,time,cost] = steerLQR(rrt_tree(index).vertex,xy,K,S,Q,R,T,explore); % Write this function
-    if rrt_tree(index).children ~= -1
-        for i = 1:size(rrt_tree(index).children,2)
-            if norm(new_vert - rrt_tree(rrt_tree(index).children(i)).vertex) < 0.001
-                %disp('Collision');
-                continue;
-            end
-        end
-    end
+    
     delete(hxy);
     figure(1);
     hxy = plot(xy(1),xy(2),'r.');axis([world_bounds_th, world_bounds_thdot]);
@@ -139,15 +131,10 @@ while ~nearGoal
         rrt_tree(index).children = [rrt_tree(index).children N];
     end
     if ~explore
-        %T = 0.05;
+        T = 0.1;
         rrt_tree = rewireLQR(rrt_tree,N,Q,R,T,explore);
     end
-    
-    if mod(N,10) == 0 && found == 1
-        disp(N);
-        disp(current_cost);
-    end
-    %disp(N);
+    disp(N);
     
     
     
@@ -178,7 +165,6 @@ while ~nearGoal
                 disp(N);
                 disp('descending cost');
                 disp(current_cost);
-                best_cost = current_cost;
             else
                 if rrt_tree(i).cost < current_cost
                     goal_vert = i;
@@ -187,22 +173,21 @@ while ~nearGoal
                     disp(i);
                     disp('descending cost');
                     disp(current_cost);
-                    best_cost = [best_cost current_cost];
                 end
             end
-            found = 1;
-            explore = 0;
         end
+        found = 1;
+        explore = 0;
     end
     
-%     if found == 1
-%         if rrt_tree(goal_vert).cost < current_cost
-%             current_cost = rrt_tree(goal_vert).cost;
-%             disp('descending cost');
-%             disp(current_cost);
-%             disp(N);
-%         end
-%     end
+    if found == 1
+        if rrt_tree(goal_vert).cost < current_cost
+            current_cost = rrt_tree(goal_vert).cost;
+            disp('descending cost');
+            disp(current_cost);
+            disp(N);
+        end
+    end
     
     if N == 2000
         if found
@@ -249,7 +234,7 @@ end
 % xy_goal = [pi;0]; plot(xy_goal(1),xy_goal(2),'go','MarkerFaceColor','g','MarkerSize',10); drawnow;
 % plot(final_path(1,:),final_path(2,:),'bo','MarkerFaceColor','b','MarkerSize',5);
 
-figure()
+figure(1)
 %plot(rrt_verts(1,:),rrt_verts(2,:),'bo','MarkerFaceColor','b','MarkerSize',5);
 for i = 1:size(path,2)-1
 %for i = 1:N

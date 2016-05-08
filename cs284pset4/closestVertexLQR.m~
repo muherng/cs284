@@ -29,12 +29,14 @@ for i = 1:N
         minimum = cost_to_go;
         K_final = K;
         S_final = S;
+        closest_vert = rrt_verts(:,i);
         index = i;
     else
         if cost_to_go < minimum
             minimum = cost_to_go;
             K_final = K;
             S_final = S;
+            closest_vert = rrt_verts(:,i);
             index = i;
         end
     end
