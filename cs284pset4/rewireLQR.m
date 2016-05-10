@@ -18,9 +18,9 @@ for i = 1:size(neighbors,2)
     end
     new_cost = cost_to_vert + cost_to_go;
     if new_cost < rrt_tree(neighbors(i)).cost;
-        disp('rewire');
-        disp(rrt_tree(neighbors(i)).cost);
-        disp(new_cost);
+        %disp('rewire');
+        %disp(rrt_tree(neighbors(i)).cost);
+        %disp(new_cost);
         old_parent = rrt_tree(neighbors(i)).parent;
         decrement = rrt_tree(neighbors(i)).cost - new_cost;
         root = neighbors(i);
