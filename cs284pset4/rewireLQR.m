@@ -1,12 +1,16 @@
-function rrt_tree = rewireLQR(rrt_tree,N,Q,R,T,explore)
+function rrt_tree = rewireLQR(rrt_tree,N,Q,R,T,active_nodes,explore)
 %nv = new_vert.';
 nv = rrt_tree(N).vertex;
 cost_to_vert = rrt_tree(N).cost;
-gamma = 10.0;
-neighbor_radius = gamma*(log(N)/N)^0.5;
+%200 for Q identity, R = 1
+%
+gamma = 50.0;
+%neighbor_radius = gamma*(log(active_nodes)/active_nodes)^0.5;
 neighbor_radius = gamma;
 [neighbors,policy_matrix,cost_matrix] = neighborsLQR(rrt_tree,N,neighbor_radius,Q,R);
 %disp(neighbors);
+rewire_count = 0;
+%disp(size(neighbors,2));
 for i = 1:size(neighbors,2)
     vert = rrt_tree(neighbors(i)).vertex;
     %x_bar = vert - nv.';
@@ -17,7 +21,8 @@ for i = 1:size(neighbors,2)
         continue;
     end
     new_cost = cost_to_vert + cost_to_go;
-    if new_cost < rrt_tree(neighbors(i)).cost;
+    if new_cost < rrt_tree(neighbors(i)).cost
+        rewire_count = rewire_count + 1;
         %disp('rewire');
         %disp(rrt_tree(neighbors(i)).cost);
         %disp(new_cost);
@@ -41,5 +46,5 @@ for i = 1:size(neighbors,2)
         %rrt_distance(neighbors(i)) =  dist;
     end
 end
-
+disp(rewire_count);
 return;

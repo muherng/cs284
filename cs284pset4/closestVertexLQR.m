@@ -12,6 +12,9 @@ B = [0;1];
 [K,S] = lqr(A,B,Q,R);
 index = 1;
 for i = 1:N
+    if rrt_tree(i).cost == -1
+        continue
+    end
     x_bar = rrt_tree(i).vertex - xy;
     angle = x_bar(1);
     if angle < 0

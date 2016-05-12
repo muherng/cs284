@@ -55,9 +55,13 @@ for i = 1:iter_time-1
         u = -5;
     end
     action(i) = u;
-    cost = cost + (u.'*R*u)*(t(i+1) - t(i));
+    xf = [3.14;0];  %NOT ALWAYS TRUE MAKE SURE YOU ARE AWARE
+    cost = cost + ((y(i,:).'-xf).'*Q*(y(i,:).'-xf) + (u.'*R*u))*(t(i+1) - t(i));
+    %cost = cost + (u.'*R*u)*(t(i+1) - t(i));
 end
-
+%new line of code
+end_point = forward_simulate(start,action,time);
+%end new line
 if end_point(1) < - pi/2
     end_point(1) = 3*pi/2 + (end_point(1) + pi/2);
 end

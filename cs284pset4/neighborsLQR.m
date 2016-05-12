@@ -8,6 +8,9 @@ B = [0;1];
 [~,S] = lqr(A,B,Q,R);
 index = 1;
 for i = 1:N-1
+    if rrt_tree(i).cost == -1
+        continue
+    end
     x_bar = rrt_tree(i).vertex - xy;
     %angle = rrt_verts(1,i) - xy(1);
     angle = x_bar(1);
